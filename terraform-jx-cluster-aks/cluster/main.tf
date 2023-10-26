@@ -8,7 +8,18 @@ resource "azurerm_kubernetes_cluster" "aks" {
   azure_policy_enabled = false
   http_application_routing_enabled = false
   role_based_access_control_enabled = true
+  #automatic_channel_upgrade = "none"
+  image_cleaner_enabled = var.image_cleaner_enabled
+  image_cleaner_interval_hours = var.image_cleaner_interval_hours
+  private_cluster_enabled = var.private_cluster_enabled
+  #private_dns_zone_id = var.private_dns_zone_id
+  workload_identity_enabled = var.workload_identity_enabled
+  oidc_issuer_enabled              = "true"
+ 
 
+
+
+  
   azure_active_directory_role_based_access_control {
     managed = true
   }
@@ -29,7 +40,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
     min_count            = var.min_node_count
     max_count            = var.max_node_count
     orchestrator_version = var.cluster_version
-    enable_auto_scaling  = var.max_node_count == null ? false : true
+    enable_auto_scaling  = var.max_node_count == null ? false : true 
+    
+
   }
 
   network_profile {

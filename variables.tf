@@ -5,7 +5,7 @@ variable "cluster_name" {
 }
 variable "location" {
   type        = string
-  default     = "australiaeast"
+  default     = ""
   description = "The Azure region in to which to provision the cluster"
 }
 
@@ -185,6 +185,72 @@ variable "logging_retention_days" {
   default     = 30
   description = "Number of days to retain logs in Log Analytics if enabled"
 }
+variable "automatic_channel_upgrade" {
+  type = bool
+  description = "Whether to enable automatic channel upgrades for the AKS cluster."
+  default = false
+}
+
+variable "image_cleaner_enabled" {
+  type = bool
+  description = "Whether to enable the image cleaner for the AKS cluster."
+  default = true
+}
+
+variable "image_cleaner_interval_hours" {
+  type = number
+  description = "The interval in hours at which the image cleaner should run."
+  default = 24
+}
+
+variable "monitor_metrics" {
+  type = list(string)
+  description = "A list of metrics to monitor for the AKS cluster."
+  default = ["cpu", "memory", "disk"]
+}
+
+variable "network_profile" {
+  type = string
+  description = "The network profile for the AKS cluster."
+  default = "Azure"
+}
+
+variable "private_cluster_enabled" {
+  type = bool
+  description = "Whether to enable private cluster mode for the AKS cluster."
+  default = false
+}
+
+variable "private_dns_zone_id" {
+  type = string
+  description = "The ID of the private DNS zone for the AKS cluster."
+  default = ""
+}
+
+variable "workload_autoscaler_profile" {
+  type = object({
+    min_nodes = number
+    max_nodes = number
+  })
+  description = "The workload autoscaler profile for the AKS cluster."
+  default = {
+    min_nodes = 1
+    max_nodes = 3
+  }
+}
+
+variable "workload_identity_enabled" {
+  type = bool
+  description = "Whether to enable workload identity for the AKS cluster."
+  default = true
+}
+
+variable "public_network_access_enabled" {
+  type = bool
+  description = "Whether to enable public network access for the AKS cluster."
+  default = true
+}
+
 
 // ----------------------------------------------------------------------------
 // DNS variables
