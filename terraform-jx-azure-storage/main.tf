@@ -17,7 +17,7 @@ resource "azurerm_resource_group" "storage" {
 }
 
 resource "azurerm_storage_account" "storage" {
-  name                     = local.account_name
+  name                     = "jxsavingmuskox"
   location                 = var.location
   resource_group_name      = azurerm_resource_group.storage.name
   account_replication_type = "RAGRS"

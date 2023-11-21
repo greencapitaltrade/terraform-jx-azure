@@ -4,7 +4,7 @@ variable "cluster_name" {
 variable "enabled" {
   type        = string
   description = "Flag to indicate whether to provision Azure Key Vault for secret storage"
-  default     = false
+  default     = true
 }
 variable "location" {
   type    = string

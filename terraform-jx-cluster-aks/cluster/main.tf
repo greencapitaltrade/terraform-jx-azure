@@ -8,21 +8,18 @@ resource "azurerm_kubernetes_cluster" "aks" {
   azure_policy_enabled = false
   http_application_routing_enabled = false
   role_based_access_control_enabled = true
-  #automatic_channel_upgrade = "none"
   image_cleaner_enabled = var.image_cleaner_enabled
   image_cleaner_interval_hours = var.image_cleaner_interval_hours
   private_cluster_enabled = var.private_cluster_enabled
-  #private_dns_zone_id = var.private_dns_zone_id
+  private_dns_zone_id        = var.private_dns_zone_id
   workload_identity_enabled = var.workload_identity_enabled
-  oidc_issuer_enabled              = "true"
- 
-
-
-
+  oidc_issuer_enabled              = true
   
   azure_active_directory_role_based_access_control {
     managed = true
   }
+  
+  
 
   dynamic "oms_agent" {
     for_each = var.enable_log_analytics ? [""] : []
@@ -30,12 +27,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
       # enabled                    = var.enable_log_analytics
       log_analytics_workspace_id = var.enable_log_analytics ? azurerm_log_analytics_workspace.cluster[0].id : ""
     }
-  }
+ }
+    
 
+  
   default_node_pool {
     name                 = "default"
     vm_size              = var.node_size
-    vnet_subnet_id       = var.vnet_subnet_id
     node_count           = var.node_count
     min_count            = var.min_node_count
     max_count            = var.max_node_count
@@ -45,14 +43,20 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   }
 
+  
+
   network_profile {
     network_plugin = var.cluster_network_model
+    dns_service_ip     = "10.1.3.4"
+    service_cidr       = "10.1.3.0/24"
   }
 
   identity {
     type = "SystemAssigned"
   }
 }
+
+
 
 resource "azurerm_kubernetes_cluster_node_pool" "mlnode" {
   count                 = var.ml_node_size == "" ? 0 : 1
@@ -66,6 +70,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "mlnode" {
   orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_ml_node_count == null ? false : true
   node_taints           = ["sku=gpu:NoSchedule"]
+  
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
@@ -76,11 +81,13 @@ resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
   spot_max_price        = var.use_spot ? var.spot_max_price : null
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.build_node_size
-  vnet_subnet_id        = var.vnet_subnet_id
+  
   node_count            = var.use_spot ? 0 : var.build_node_count
   min_count             = var.min_build_node_count
   max_count             = var.max_build_node_count
   orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_build_node_count == null ? false : true
   node_taints           = ["sku=build:NoSchedule"]
+  
 }
+

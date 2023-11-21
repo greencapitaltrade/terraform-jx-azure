@@ -54,7 +54,7 @@ variable "max_ml_node_count" {
 // ----------------------------------------------------------------------------
 variable "use_spot" {
   type        = bool
-  default     = true
+  default     = false
   description = "Should we use spot instances for the build nodes"
 }
 variable "spot_max_price" {
@@ -98,6 +98,7 @@ variable "location" {
 }
 variable "vnet_subnet_id" {
   type = string
+  default = ""
 }
 variable "dns_prefix" {
   type = string
@@ -113,7 +114,7 @@ variable "network_resource_group" {
 }
 variable "cluster_network_model" {
   type    = string
-  default = "kubenet"
+  default = "azure"
 }
 variable "enable_log_analytics" {
   type = bool
@@ -137,16 +138,6 @@ variable "image_cleaner_interval_hours" {
   type = number
   description = "The interval in hours at which the image cleaner should run."
   default = 24
-}
-
-variable "maintenance_window" {
-  type = list(object({
-    start_date_time = string
-    expiration_date_time = string
-    recurrence = string
-  }))
-  description = "A list of maintenance windows for the AKS cluster."
-  default = []
 }
 
 variable "monitor_metrics" {
@@ -175,14 +166,14 @@ variable "upgrade_settings" {
 variable "private_cluster_enabled" {
   type = bool
   description = "Whether to enable private cluster mode for the AKS cluster."
-  default = false
+  default = true
 }
 
-#variable "private_dns_zone_id" {
-#  type = string
-#  description = "The ID of the private DNS zone for the AKS cluster."
-#  default = "System"
-#}
+variable "private_dns_zone_id" {
+  type = string
+  description = "The ID of the private DNS zone for the AKS cluster."
+  default = "System"
+}
 
 variable "workload_identity_enabled" {
   type = bool
@@ -195,3 +186,58 @@ variable "public_network_access_enabled" {
   description = "Whether to enable public network access for the AKS cluster."
   default = false
 }
+variable "agents_pool_max_surge" {
+  type        = number
+  default     = 1
+  description = "The maximum number or percentage of nodes which will be added to the Default Node Pool size during an upgrade."
+}
+
+
+variable "maintenance_window" {
+  type = object({
+    allowed = list(object({
+      day   = string
+      hours = number
+    })),
+    not_allowed = list(object({
+      end   = string
+      start = string
+    })),
+  })
+  default     = null
+  description = "(Optional) Maintenance configuration of the managed cluster."
+}
+
+variable "maintenance_window_node_os" {
+  type = object({
+    day_of_month = optional(number)
+    day_of_week  = optional(string)
+    duration     = number
+    frequency    = string
+    interval     = number
+    start_date   = optional(string)
+    start_time   = optional(string)
+    utc_offset   = optional(string)
+    week_index   = optional(string)
+    not_allowed = optional(set(object({
+      end   = string
+      start = string
+    })))
+  })
+   default     = null
+
+}
+
+
+
+
+
+#day_of_month` -
+ #day_of_week` - (Optional) The day of the week for the maintenance run. Options are `Monday`, `Tuesday`, `Wednesday`, `Thurday`, `Friday`, `Saturday` and `Sunday`. Required in combination with weekly frequency.
+ #duration` - (Required) The duration of the window for maintenance to run in hours.
+ #frequency` - (Required) Frequency of maintenance. Possible options are `Daily`, `Weekly`, `AbsoluteMonthly` and `RelativeMonthly`.
+ #interval` - (Required) The interval for maintenance runs. Depending on the frequency this interval is week or month based.
+ #start_date` - (Optional) The date on which the maintenance window begins to take effect.
+ #start_time` - (Optional) The time for maintenance to begin, based on the timezone determined by `utc_offset`. Format is `HH:mm`.
+ #utc_offset` - (Optional) Used to determine the timezone for cluster maintenance.
+ #week_index` - (Optional) The week in the month used for the maintenance run. Options are `First`, `Second`, `Third`, `Fourth`, and `Last`

@@ -1,11 +1,11 @@
 variable "cluster_name" {
   description = "Variable to provide your desired name for the cluster. The script will create a random name if this is empty"
   type        = string
-  default     = ""
+  default     = "saving-muskox"
 }
 variable "location" {
   type        = string
-  default     = ""
+  default     = "centralindia"
   description = "The Azure region in to which to provision the cluster"
 }
 
@@ -152,12 +152,12 @@ variable "cluster_node_resource_group_name" {
 }
 variable "vnet_cidr" {
   type        = string
-  default     = "10.8.0.0/16"
+  default     = "10.1.0.0/16"
   description = "The CIDR of the provisioned Virtual Network in Azure in to which worker nodes are placed"
 }
 variable "subnet_cidr" {
   type        = string
-  default     = "10.8.0.0/24"
+  default     = "10.1.1.0/24"
   description = "The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed"
 }
 variable "network_name" {
@@ -167,7 +167,7 @@ variable "network_name" {
 }
 variable "cluster_network_model" {
   type        = string
-  default     = "kubenet"
+  default     = "azure"
   description = "Variable to define the network model for the cluster. Valid values are either `kubenet` or `azure`"
 }
 variable "subnet_name" {
@@ -212,7 +212,7 @@ variable "monitor_metrics" {
 variable "network_profile" {
   type = string
   description = "The network profile for the AKS cluster."
-  default = "Azure"
+  default = "azure"
 }
 
 variable "private_cluster_enabled" {

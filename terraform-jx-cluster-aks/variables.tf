@@ -54,7 +54,7 @@ variable "max_ml_node_count" {
 // ----------------------------------------------------------------------------
 variable "use_spot" {
   type        = bool
-  default     = true
+  default     = false
   description = "Should we use spot instances for the build nodes"
 }
 variable "spot_max_price" {
@@ -100,7 +100,7 @@ variable "cluster_version" {
 }
 variable "location" {
   type    = string
-  default = "australiaeast"
+  default = "centralindia"
 }
 variable "network_resource_group_name" {
   type    = string
@@ -112,7 +112,7 @@ variable "cluster_resource_group_name" {
 }
 variable "cluster_node_resource_group_name" {
   type    = string
-  default = ""
+  default = "rg-node"
 }
 variable "vnet_cidr" {
   type    = string
@@ -128,11 +128,10 @@ variable "network_name" {
 }
 variable "cluster_network_model" {
   type    = string
-  default = "kubenet"
+  default = "Azure"
 }
 variable "subnet_name" {
   type    = string
-  default = ""
 }
 variable "enable_log_analytics" {
   type    = bool
@@ -142,3 +141,60 @@ variable "logging_retention_days" {
   type    = number
   default = 30
 }
+
+variable "maintenance_window" {
+  type = object({
+    allowed = list(object({
+      day   = string
+      hours = number
+    })),
+    not_allowed = list(object({
+      end   = string
+      start = string
+    })),
+  })
+  default     = null
+  description = "(Optional) Maintenance configuration of the managed cluster."
+}
+
+variable "maintenance_window_node_os" {
+  type = object({
+    day_of_month = number
+    day_of_week  = string
+    duration     = number
+    frequency    = string
+    interval     = string
+    start_date   = string
+    start_time   = string
+    utc_offset   = string
+    week_index   = string
+    not_allowed = set(object({
+      end   = string
+      start = string
+    }))
+  })
+   default     = null
+}
+
+variable "vm_username" {
+  type        = string
+  description = "Username for vm-1"
+  default = "azureuser"
+}
+
+variable "vm_password" {
+  type        = string
+  sensitive   = true
+  description = "Password for vm-1"
+  default = "test1234!"
+}
+
+ #day_of_month` -
+ #day_of_week` - (Optional) The day of the week for the maintenance run. Options are `Monday`, `Tuesday`, `Wednesday`, `Thurday`, `Friday`, `Saturday` and `Sunday`. Required in combination with weekly frequency.
+ #duration` - (Required) The duration of the window for maintenance to run in hours.
+ #frequency` - (Required) Frequency of maintenance. Possible options are `Daily`, `Weekly`, `AbsoluteMonthly` and `RelativeMonthly`.
+ #interval` - (Required) The interval for maintenance runs. Depending on the frequency this interval is week or month based.
+ #start_date` - (Optional) The date on which the maintenance window begins to take effect.
+ #start_time` - (Optional) The time for maintenance to begin, based on the timezone determined by `utc_offset`. Format is `HH:mm`.
+ #utc_offset` - (Optional) Used to determine the timezone for cluster maintenance.
+ #week_index` - (Optional) The week in the month used for the maintenance run. Options are `First`, `Second`, `Third`, `Fourth`, and `Last`

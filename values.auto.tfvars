@@ -20,7 +20,7 @@ min_node_count = "1"
 
 max_node_count = "4"
 
-use_spot = "true"
+use_spot = "false"
 
 build_node_size = "Standard_D2ps_v5"
 
