@@ -101,7 +101,7 @@ module "vnet" {
   location                           = var.location
   vm_username                        = var.vm_username
   vm_password                        = var.vm_password 
-  depends_on = [azurerm_resource_group.cluster]
+  depends_on                         = [azurerm_resource_group.cluster]
 }
 
 

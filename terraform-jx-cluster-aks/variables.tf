@@ -132,6 +132,7 @@ variable "cluster_network_model" {
 }
 variable "subnet_name" {
   type    = string
+  default = "aks-subnet"
 }
 variable "enable_log_analytics" {
   type    = bool
@@ -186,7 +187,7 @@ variable "vm_password" {
   type        = string
   sensitive   = true
   description = "Password for vm-1"
-  default = "test1234!"
+  default = "password123!"
 }
 
  #day_of_month` -

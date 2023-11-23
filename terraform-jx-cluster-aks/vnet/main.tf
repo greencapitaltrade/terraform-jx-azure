@@ -9,8 +9,8 @@ resource "azurerm_virtual_network" "vnet_hub" {
   address_space       = ["10.2.0.0/20"]
 }
 
-data "azurerm_virtual_network" "aks-vnet-16345036" {
-  name                = "aks-vnet-16345036"
+data "azurerm_virtual_network" "aks-vnet" {
+  name                = "aks-vnet"
   resource_group_name = data.azurerm_resource_group.rg-node.name
   
 }
@@ -54,6 +54,7 @@ resource "azurerm_subnet" "gatewaysubnet" {
   resource_group_name  = data.azurerm_resource_group.rg-node.name
   virtual_network_name = azurerm_virtual_network.vnet_hub.name
   address_prefixes     = ["10.2.3.0/24"]
+  private_endpoint_network_policies_enabled = false
 }
 
 resource "azurerm_public_ip" "bas" {
@@ -68,6 +69,7 @@ resource "azurerm_bastion_host" "bas" {
   name                = "bas-pvaks-cac-001"
   location            = var.location
   resource_group_name = data.azurerm_resource_group.rg-node.name
+  
 
   ip_configuration {
     name                 = "configuration"
@@ -295,8 +297,8 @@ resource "azurerm_private_link_service" "p-link" {
   ]
 }
 
-resource "azurerm_private_dns_zone" "p-dns" {
-  name                = "privatelink.blob.core.windows.net"
+data "azurerm_dns_zone" "dns" {
+  name                = data.azurerm_dns_zone.dns.name
   resource_group_name = data.azurerm_resource_group.rg-node.name
 }
 
@@ -308,7 +310,7 @@ resource "azurerm_private_endpoint" "p-enp" {
   
 
  private_service_connection {
-    name                           = "example-privateserviceconnection"
+    name                           = "p-link"
     private_connection_resource_id = azurerm_storage_account.savm.id
     is_manual_connection           = false
     subresource_names              = ["blob"]
@@ -316,16 +318,17 @@ resource "azurerm_private_endpoint" "p-enp" {
 
   private_dns_zone_group {
     name                 = azurerm_private_dns_zone.p-dns.name
-    private_dns_zone_ids = [azurerm_private_dns_zone.p-dns.id]
+    private_dns_zone_ids = data.azurerm_dns_zone.dns.id
   }
 }
 
 
 resource "azurerm_private_dns_zone_virtual_network_link" "vnet-link" {
-  name                  = "vnet-link"
+  name                  = "vm-link"
   resource_group_name   = data.azurerm_resource_group.rg-node.name
-  private_dns_zone_name = azurerm_private_dns_zone.p-dns.name
+  private_dns_zone_name = data.azurerm_dns_zone.dns.name
   virtual_network_id    = azurerm_virtual_network.vnet_hub.id
+  depends_on            = [data.azurerm_dns_zone.dns]
 }
 
 

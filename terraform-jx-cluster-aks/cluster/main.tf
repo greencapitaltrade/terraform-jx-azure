@@ -1,20 +1,20 @@
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = var.cluster_name
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  node_resource_group = var.node_resource_group_name
-  dns_prefix          = var.dns_prefix
-  kubernetes_version  = var.cluster_version
-  azure_policy_enabled = false
-  http_application_routing_enabled = false
-  role_based_access_control_enabled = true
-  image_cleaner_enabled = var.image_cleaner_enabled
-  image_cleaner_interval_hours = var.image_cleaner_interval_hours
-  private_cluster_enabled = var.private_cluster_enabled
-  private_dns_zone_id        = var.private_dns_zone_id
-  workload_identity_enabled = var.workload_identity_enabled
-  oidc_issuer_enabled              = true
-  
+  name                                         = var.cluster_name
+  location                                     = var.location
+  resource_group_name                          = var.resource_group_name
+  node_resource_group                          = var.node_resource_group_name
+  dns_prefix                                   = var.dns_prefix
+  kubernetes_version                           = var.cluster_version
+  azure_policy_enabled                         = false
+  http_application_routing_enabled             = false
+  role_based_access_control_enabled            = true
+  image_cleaner_enabled                        = var.image_cleaner_enabled
+  image_cleaner_interval_hours                 = var.image_cleaner_interval_hours
+  private_cluster_enabled                      = var.private_cluster_enabled
+  private_dns_zone_id                          = var.private_dns_zone_id
+  workload_identity_enabled                    = var.workload_identity_enabled
+  oidc_issuer_enabled                          = true
+
   azure_active_directory_role_based_access_control {
     managed = true
   }
