@@ -1,6 +1,6 @@
 data "azurerm_resource_group" "rg-node" {
   name = "rg-node"
-  
+  depends_on = [ azurerm_kubernetes_cluster ]
 }
 resource "azurerm_virtual_network" "vnet_hub" {
   name                = "vnet-hub"
@@ -19,7 +19,7 @@ resource "azurerm_virtual_network_peering" "to_vnet_aks" {
   name                         = "peer-to-vnet-aks"
   resource_group_name          = data.azurerm_resource_group.rg-node.name
   virtual_network_name         = azurerm_virtual_network.vnet_hub.name
-  remote_virtual_network_id    = data.azurerm_virtual_network.aks-vnet-16345036.id
+  remote_virtual_network_id    = data.azurerm_virtual_network.aks-vnet.id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = true
@@ -28,7 +28,7 @@ resource "azurerm_virtual_network_peering" "to_vnet_aks" {
 resource "azurerm_virtual_network_peering" "to_vnet_hub" {
   name                         = "peer-to-vnet-hub"
   resource_group_name          = data.azurerm_resource_group.rg-node.name
-  virtual_network_name         = data.azurerm_virtual_network.aks-vnet-16345036.name
+  virtual_network_name         = data.azurerm_virtual_network.aks-vnet.name
   remote_virtual_network_id    = azurerm_virtual_network.vnet_hub.id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
