@@ -122,6 +122,10 @@ variable "subnet_cidr" {
   type    = string
   default = "10.8.0.0/24"
 }
+variable "gateway_cidr" {
+  type    = string
+  default = "10.1.0.0/24"
+}
 variable "network_name" {
   type    = string
   default = ""
@@ -141,4 +145,16 @@ variable "enable_log_analytics" {
 variable "logging_retention_days" {
   type    = number
   default = 30
+}
+variable "private_cluster_enabled" {
+  type    = bool
+  default = false
+}
+variable "apex_domain" {
+  type        = string
+  description = "The parent / apex domain to be used for the cluster"
+}
+variable "subdomain" {
+  description = "Optional sub domain for the installation"
+  type        = string
 }

@@ -8,6 +8,10 @@ variable "location" {
   default     = "centralindia"
   description = "The Azure region in to which to provision the cluster"
 }
+variable "private_cluster_enabled" {
+  type    = bool
+  default = false
+}
 
 // ----------------------------------------------------------------------------
 // JX Boot variables
@@ -132,7 +136,7 @@ variable "dns_prefix" {
 }
 variable "cluster_version" {
   type        = string
-  default     = "1.26.6"
+  default     = "1.26.10"
   description = "Kubernetes version to use for the AKS cluster"
 }
 variable "network_resource_group_name" {
