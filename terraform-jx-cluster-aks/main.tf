@@ -64,6 +64,7 @@ module "cluster" {
   min_build_node_count             = var.min_build_node_count
   max_build_node_count             = var.max_build_node_count
   private_cluster_enabled          = var.private_cluster_enabled
+  vpn_public_ip                    = module.vnet.vpn_public_ip
 }
 
 // ----------------------------------------------------------------------------
@@ -80,4 +81,6 @@ module "vnet" {
   subnet_name                      = local.subnet_name
   location                         = var.location
   private_cluster_enabled          = var.private_cluster_enabled
+  apex_domain                      = var.apex_domain
+  subdomain                        = var.subdomain
 }

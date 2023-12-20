@@ -1,3 +1,7 @@
+provider "tls" {
+  # You can specify the provider version here
+  version = "~> 3.0"
+}
 
 resource "azurerm_virtual_network" "cluster" {
   name                = var.network_name
@@ -47,5 +51,16 @@ resource "azurerm_virtual_network_gateway" "vpn_gateway" {
     public_ip_address_id          = azurerm_public_ip.vpn_gateway_public_ip[0].id
     private_ip_address_allocation = "Dynamic"
     subnet_id                     = azurerm_subnet.gateway_subnet[0].id
+  }
+}
+
+resource "null_resource" "vpn_setup_wait" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "read -p 'Press enter after the VPN setup is complete...'"
+    interpreter = ["bash", "-c"]
   }
 }

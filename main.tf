@@ -76,6 +76,8 @@ module "cluster" {
   subnet_cidr                      = var.subnet_cidr
   vnet_cidr                        = var.vnet_cidr
   private_cluster_enabled          = var.private_cluster_enabled
+  subdomain                        = var.subdomain
+  apex_domain                      = var.apex_domain
 }
 
 module "registry" {

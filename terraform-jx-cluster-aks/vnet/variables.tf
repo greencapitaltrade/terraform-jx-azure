@@ -19,6 +19,14 @@ variable "subnet_name" {
 variable "location" {
   type = string
 }
+variable "apex_domain" {
+  type        = string
+  description = "The parent / apex domain to be used for the cluster"
+}
+variable "subdomain" {
+  description = "Optional sub domain for the installation"
+  type        = string
+}
 variable "private_cluster_enabled" {
   type    = bool
 }
