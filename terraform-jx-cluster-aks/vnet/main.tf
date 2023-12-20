@@ -1,8 +1,3 @@
-provider "tls" {
-  # You can specify the provider version here
-  version = "~> 3.0"
-}
-
 resource "azurerm_virtual_network" "cluster" {
   name                = var.network_name
   resource_group_name = var.resource_group

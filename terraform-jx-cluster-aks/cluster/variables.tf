@@ -130,7 +130,7 @@ variable "automatic_channel_upgrade" {
   default = "patch"
 }
 variable "private_cluster_enabled" {
-  type    = bool
+  type = bool
 }
 variable "vpn_public_ip" {
   type = string
