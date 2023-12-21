@@ -78,6 +78,10 @@ module "cluster" {
   private_cluster_enabled          = var.private_cluster_enabled
   subdomain                        = var.subdomain
   apex_domain                      = var.apex_domain
+  # gateway_cidr                     = var.gateway_cidr
+  service_cidr       = var.service_cidr
+  dns_service_ip     = var.dns_service_ip
+  docker_bridge_cidr = var.docker_bridge_cidr
 }
 
 module "registry" {

@@ -156,13 +156,29 @@ variable "cluster_node_resource_group_name" {
 }
 variable "vnet_cidr" {
   type        = string
-  default     = "10.8.0.0/16"
+  default     = "10.0.0.0/16"
   description = "The CIDR of the provisioned Virtual Network in Azure in to which worker nodes are placed"
 }
 variable "subnet_cidr" {
   type        = string
-  default     = "10.8.0.0/24"
+  default     = "10.0.0.0/24"
   description = "The CIDR of the provisioned  subnet within the `vnet_cidr` to to which worker nodes are placed"
+}
+# variable "gateway_cidr" {
+#   type    = string
+#   default = "10.1.0.0/24"
+# }
+variable "service_cidr" {
+  type    = string
+  default = "12.0.0.0/24"
+}
+variable "dns_service_ip" {
+  type    = string
+  default = "12.0.0.10"
+}
+variable "docker_bridge_cidr" {
+  type    = string
+  default = "12.0.0.0/24"
 }
 variable "network_name" {
   type        = string
@@ -264,8 +280,6 @@ variable "use_existing_acr_resource_group_name" {
   type        = string
   default     = null
 }
-
-
 
 // ----------------------------------------------------------------------------
 // Storage variables

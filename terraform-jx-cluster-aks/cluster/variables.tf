@@ -132,6 +132,15 @@ variable "automatic_channel_upgrade" {
 variable "private_cluster_enabled" {
   type = bool
 }
-variable "vpn_public_ip" {
+# variable "vpn_public_ip" {
+#   type = string
+# }
+variable "service_cidr" {
+  type = string
+}
+variable "dns_service_ip" {
+  type = string
+}
+variable "docker_bridge_cidr" {
   type = string
 }

@@ -115,16 +115,22 @@ variable "cluster_node_resource_group_name" {
   default = ""
 }
 variable "vnet_cidr" {
-  type    = string
-  default = "10.8.0.0/16"
+  type = string
 }
 variable "subnet_cidr" {
-  type    = string
-  default = "10.8.0.0/24"
+  type = string
 }
-variable "gateway_cidr" {
-  type    = string
-  default = "10.1.0.0/24"
+# variable "gateway_cidr" {
+#   type = string
+# }
+variable "service_cidr" {
+  type = string
+}
+variable "dns_service_ip" {
+  type = string
+}
+variable "docker_bridge_cidr" {
+  type = string
 }
 variable "network_name" {
   type    = string

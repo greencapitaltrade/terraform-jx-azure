@@ -9,7 +9,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   automatic_channel_upgrade = var.automatic_channel_upgrade
   private_cluster_enabled   = var.private_cluster_enabled
 
-  api_server_authorized_ip_ranges = var.private_cluster_enabled ? [] : [var.vpn_public_ip]
+  # api_server_authorized_ip_ranges = var.private_cluster_enabled ? [] : [var.vpn_public_ip]
 
   default_node_pool {
     name                 = "default"
@@ -23,7 +23,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   network_profile {
-    network_plugin = var.cluster_network_model
+    network_plugin     = var.cluster_network_model
+    service_cidr       = var.service_cidr
+    dns_service_ip     = var.dns_service_ip
+    docker_bridge_cidr = var.docker_bridge_cidr
   }
 
   identity {
