@@ -72,6 +72,10 @@ module "cluster" {
   app_node_count           = var.app_node_count
   min_app_node_count       = var.min_app_node_count
   max_app_node_count       = var.max_app_node_count
+  jx_node_size             = var.jx_node_size
+  jx_node_count            = var.jx_node_count
+  min_jx_node_count        = var.min_jx_node_count
+  max_jx_node_count        = var.max_jx_node_count
   private_cluster_enabled  = var.private_cluster_enabled
   vpn_public_ip            = module.vnet.vpn_public_ip
   service_cidr             = var.service_cidr

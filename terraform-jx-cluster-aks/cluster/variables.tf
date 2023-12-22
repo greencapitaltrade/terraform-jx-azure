@@ -89,7 +89,7 @@ variable "max_build_node_count" {
 variable "app_use_spot" {
   type        = bool
   default     = true
-  description = "Should we use spot instances for the build nodes"
+  description = "Should we use spot instances for the app nodes"
 }
 variable "app_spot_max_price" {
   type        = number
@@ -113,6 +113,30 @@ variable "min_app_node_count" {
 }
 variable "max_app_node_count" {
   description = "The maximum number of app nodes to use for the cluster if autoscaling is enabled"
+  type        = number
+  default     = null
+}
+
+// ----------------------------------------------------------------------------
+// JX nodepool variables
+// ----------------------------------------------------------------------------
+variable "jx_node_size" {
+  type        = string
+  default     = ""
+  description = "The size of the jx node to use for the cluster"
+}
+variable "jx_node_count" {
+  description = "The number of jx nodes to use for the cluster"
+  type        = number
+  default     = null
+}
+variable "min_jx_node_count" {
+  description = "The minimum number of jx nodes to use for the cluster if autoscaling is enabled"
+  type        = number
+  default     = null
+}
+variable "max_jx_node_count" {
+  description = "The maximum number of jx nodes to use for the cluster if autoscaling is enabled"
   type        = number
   default     = null
 }
