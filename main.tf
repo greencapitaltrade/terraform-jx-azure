@@ -18,7 +18,7 @@ provider "azurerm" {
 }
 
 provider "kubernetes" {
-  host = module.cluster.cluster_endpoint
+  host = "https://jxgct-devhost-irkwipwm.hcp.centralindia.azmk8s.io:443" #module.cluster.cluster_endpoint
   cluster_ca_certificate = base64decode(
     module.cluster.ca_certificate,
   )
@@ -33,7 +33,7 @@ provider "kubernetes" {
 provider "helm" {
   kubernetes {
 
-    host = module.cluster.cluster_endpoint
+    host = "https://jxgct-devhost-irkwipwm.hcp.centralindia.azmk8s.io:443" #module.cluster.cluster_endpoint
     cluster_ca_certificate = base64decode(
       module.cluster.ca_certificate,
     )
@@ -78,7 +78,7 @@ module "cluster" {
   private_cluster_enabled          = var.private_cluster_enabled
   subdomain                        = var.subdomain
   apex_domain                      = var.apex_domain
-  # gateway_cidr                     = var.gateway_cidr
+  gateway_cidr                     = var.gateway_cidr
   service_cidr       = var.service_cidr
   dns_service_ip     = var.dns_service_ip
   docker_bridge_cidr = var.docker_bridge_cidr

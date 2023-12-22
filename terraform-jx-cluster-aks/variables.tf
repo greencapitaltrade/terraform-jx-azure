@@ -120,9 +120,9 @@ variable "vnet_cidr" {
 variable "subnet_cidr" {
   type = string
 }
-# variable "gateway_cidr" {
-#   type = string
-# }
+variable "gateway_cidr" {
+  type = string
+}
 variable "service_cidr" {
   type = string
 }

@@ -7,9 +7,9 @@ variable "vnet_cidr" {
 variable "subnet_cidr" {
   type = string
 }
-# variable "gateway_cidr" {
-#   type    = string
-# }
+variable "gateway_cidr" {
+  type    = string
+}
 variable "network_name" {
   type = string
 }

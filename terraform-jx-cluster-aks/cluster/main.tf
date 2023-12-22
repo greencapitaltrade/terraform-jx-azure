@@ -9,8 +9,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
   automatic_channel_upgrade = var.automatic_channel_upgrade
   private_cluster_enabled   = var.private_cluster_enabled
 
-  # api_server_authorized_ip_ranges = var.private_cluster_enabled ? [] : [var.vpn_public_ip]
-
   default_node_pool {
     name                 = "default"
     vm_size              = var.node_size
