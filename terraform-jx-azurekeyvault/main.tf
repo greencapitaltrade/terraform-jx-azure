@@ -50,8 +50,8 @@ resource "azurerm_key_vault_access_policy" "jx" {
   tenant_id    = local.tenant_id
 
   secret_permissions = [
-    "get",
-    "set",
+    "Get",
+    "Set",
     "Delete",
   ]
 }
@@ -63,8 +63,8 @@ resource "azurerm_key_vault_access_policy" "terraform" {
   tenant_id    = local.tenant_id
 
   secret_permissions = [
-    "get",
-    "set",
+    "Get",
+    "Set",
     "Delete",
   ]
 }

@@ -1,14 +1,6 @@
 approvers:
-- rawlingsj
-- jstrachan
-- rajdavies
-- hervelemeur
-- tomhobson
-- babadofar
+  - heroic
+  - sauravbansal
 reviewers:
-- rawlingsj
-- jstrachan
-- rajdavies
-- hervelemeur
-- tomhobson
-- babadofar
+  - heroic
+  - sauravbansal

@@ -8,6 +8,12 @@ terraform {
       version = ">=1.13.3"
     }
   }
+  backend "azurerm" {
+    resource_group_name  = "tf-state-rg"
+    storage_account_name = "tfstategct"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+  }
 }
 
 provider "azurerm" {
@@ -79,9 +85,9 @@ module "cluster" {
   subdomain                        = var.subdomain
   apex_domain                      = var.apex_domain
   gateway_cidr                     = var.gateway_cidr
-  service_cidr       = var.service_cidr
-  dns_service_ip     = var.dns_service_ip
-  docker_bridge_cidr = var.docker_bridge_cidr
+  service_cidr                     = var.service_cidr
+  dns_service_ip                   = var.dns_service_ip
+  docker_bridge_cidr               = var.docker_bridge_cidr
 }
 
 module "registry" {
