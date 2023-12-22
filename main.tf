@@ -78,6 +78,12 @@ module "cluster" {
   build_node_count                 = var.build_node_count
   min_build_node_count             = var.min_build_node_count
   max_build_node_count             = var.max_build_node_count
+  app_use_spot                     = var.app_use_spot
+  app_spot_max_price               = var.app_spot_max_price
+  app_node_size                    = var.app_node_size
+  app_node_count                   = var.app_node_count
+  min_app_node_count               = var.min_app_node_count
+  max_app_node_count               = var.max_app_node_count
   subnet_name                      = var.subnet_name
   subnet_cidr                      = var.subnet_cidr
   vnet_cidr                        = var.vnet_cidr

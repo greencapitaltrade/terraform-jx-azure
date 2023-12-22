@@ -73,14 +73,14 @@ resource "azurerm_kubernetes_cluster_node_pool" "mlnode" {
   max_count             = var.max_ml_node_count
   orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_ml_node_count == null ? false : true
-  node_taints           = ["sku=gpu:NoSchedule"]
+  node_taints           = ["sku=gpu:NoSchedule", "pool=gpu:NoSchedule"]
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
   count                 = var.build_node_size == "" ? 0 : 1
   name                  = "buildnode"
   priority              = var.use_spot ? "Spot" : "Regular"
-  eviction_policy       = var.use_spot ? "Deallocate" : null
+  eviction_policy       = var.use_spot ? "Delete" : null
   spot_max_price        = var.use_spot ? var.spot_max_price : null
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.build_node_size
@@ -90,5 +90,32 @@ resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
   max_count             = var.max_build_node_count
   orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_build_node_count == null ? false : true
-  node_taints           = ["sku=build:NoSchedule"]
+  node_taints           = ["sku=build:NoSchedule", "pool=builder:NoSchedule"]
+  node_labels = merge({
+    "gc-t.in.priority" = var.use_spot ? "spot" : "regular"
+    }, var.use_spot ? {
+    "cloud.google.com/gke-spot" = "true"
+  } : {})
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "appnode" {
+  count                 = var.app_node_size == "" ? 0 : 1
+  name                  = "appnode"
+  priority              = var.app_use_spot ? "Spot" : "Regular"
+  eviction_policy       = var.app_use_spot ? "Delete" : null
+  spot_max_price        = var.app_use_spot ? var.app_spot_max_price : null
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  vm_size               = var.app_node_size
+  vnet_subnet_id        = var.vnet_subnet_id
+  node_count            = var.app_use_spot ? 0 : var.build_node_count
+  min_count             = var.min_app_node_count
+  max_count             = var.max_app_node_count
+  orchestrator_version  = var.cluster_version
+  enable_auto_scaling   = var.max_app_node_count == null ? false : true
+  node_taints           = ["sku=app:NoSchedule", "pool=spot:NoSchedule"]
+  node_labels = merge({
+    "gc-t.in.priority" = var.app_use_spot ? "spot" : "regular"
+    }, var.app_use_spot ? {
+    "cloud.google.com/gke-spot" = "true"
+  } : {})
 }

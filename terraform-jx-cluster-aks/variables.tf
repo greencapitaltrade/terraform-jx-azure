@@ -84,6 +84,40 @@ variable "max_build_node_count" {
 }
 
 // ----------------------------------------------------------------------------
+// App nodepool variables
+// ----------------------------------------------------------------------------
+variable "app_use_spot" {
+  type        = bool
+  default     = true
+  description = "Should we use spot instances for the build nodes"
+}
+variable "app_spot_max_price" {
+  type        = number
+  default     = -1
+  description = "The maximum price you're willing to pay in USD per virtual machine, -1 to go to the maximum price"
+}
+variable "app_node_size" {
+  type        = string
+  default     = ""
+  description = "The size of the app node to use for the cluster"
+}
+variable "app_node_count" {
+  description = "The number of app nodes to use for the cluster"
+  type        = number
+  default     = null
+}
+variable "min_app_node_count" {
+  description = "The minimum number of app nodes to use for the cluster if autoscaling is enabled"
+  type        = number
+  default     = null
+}
+variable "max_app_node_count" {
+  description = "The maximum number of app nodes to use for the cluster if autoscaling is enabled"
+  type        = number
+  default     = null
+}
+
+// ----------------------------------------------------------------------------
 // Cluster variables
 // ----------------------------------------------------------------------------
 variable "cluster_name" {

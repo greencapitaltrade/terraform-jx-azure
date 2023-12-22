@@ -66,11 +66,17 @@ module "cluster" {
   build_node_count         = var.build_node_count
   min_build_node_count     = var.min_build_node_count
   max_build_node_count     = var.max_build_node_count
+  app_use_spot             = var.app_use_spot
+  app_spot_max_price       = var.app_spot_max_price
+  app_node_size            = var.app_node_size
+  app_node_count           = var.app_node_count
+  min_app_node_count       = var.min_app_node_count
+  max_app_node_count       = var.max_app_node_count
   private_cluster_enabled  = var.private_cluster_enabled
   vpn_public_ip            = module.vnet.vpn_public_ip
-  service_cidr       = var.service_cidr
-  dns_service_ip     = var.dns_service_ip
-  docker_bridge_cidr = var.docker_bridge_cidr
+  service_cidr             = var.service_cidr
+  dns_service_ip           = var.dns_service_ip
+  docker_bridge_cidr       = var.docker_bridge_cidr
 }
 
 // ----------------------------------------------------------------------------
@@ -78,10 +84,10 @@ module "cluster" {
 // ----------------------------------------------------------------------------
 
 module "vnet" {
-  source         = "./vnet"
-  resource_group = azurerm_resource_group.network.name
-  vnet_cidr      = var.vnet_cidr
-  subnet_cidr    = var.subnet_cidr
+  source                  = "./vnet"
+  resource_group          = azurerm_resource_group.network.name
+  vnet_cidr               = var.vnet_cidr
+  subnet_cidr             = var.subnet_cidr
   gateway_cidr            = var.gateway_cidr
   network_name            = local.network_name
   subnet_name             = local.subnet_name
