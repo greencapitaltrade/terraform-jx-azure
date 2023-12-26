@@ -222,3 +222,27 @@ variable "subdomain" {
   description = "Optional sub domain for the installation"
   type        = string
 }
+variable "ingress_ip_name" {
+  type        = string
+  description = "Name for the IP resource used for ingress"
+}
+
+variable "egress_ip_name" {
+  type        = string
+  description = "Name for the IP resource used for egress"
+}
+
+variable "ip_resource_group_name" {
+  type        = string
+  description = "Resource group to be used for the static ips"
+}
+
+variable "nat_gateway_name" {
+  type        = string
+  description = "NAT Gateway name"
+}
+
+variable "nat_gateway_resource_group_name" {
+  type        = string
+  description = "Resource group to be used for the nat gateway"
+}

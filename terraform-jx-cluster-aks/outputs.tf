@@ -25,3 +25,15 @@ output "kube_config_admin_raw" {
 output "kube_config_admin" {
   value = module.cluster.kube_config_admin
 }
+
+output "vpn_public_ip" {
+  value = module.vnet.vpn_public_ip
+}
+
+output "ingress_public_ip" {
+  value = module.cluster.ingress_public_ip
+}
+
+output "egress_public_ip" {
+  value = module.vnet.egress_public_ip
+}

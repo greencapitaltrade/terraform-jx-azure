@@ -24,7 +24,7 @@ provider "azurerm" {
 }
 
 provider "kubernetes" {
-  host = "https://jxgct-devhost-3yqk6k8y.hcp.centralindia.azmk8s.io:443" #module.cluster.cluster_endpoint
+  host = module.cluster.cluster_endpoint
   cluster_ca_certificate = base64decode(
     module.cluster.ca_certificate,
   )
@@ -39,7 +39,7 @@ provider "kubernetes" {
 provider "helm" {
   kubernetes {
 
-    host = "https://jxgct-devhost-3yqk6k8y.hcp.centralindia.azmk8s.io:443" #module.cluster.cluster_endpoint
+    host = module.cluster.cluster_endpoint
     cluster_ca_certificate = base64decode(
       module.cluster.ca_certificate,
     )
@@ -98,6 +98,11 @@ module "cluster" {
   service_cidr                     = var.service_cidr
   dns_service_ip                   = var.dns_service_ip
   docker_bridge_cidr               = var.docker_bridge_cidr
+  ingress_ip_name                  = var.ingress_ip_name
+  egress_ip_name                   = var.egress_ip_name
+  ip_resource_group_name           = var.ip_resource_group_name
+  nat_gateway_name                 = var.nat_gateway_name
+  nat_gateway_resource_group_name  = var.nat_gateway_resource_group_name
 }
 
 module "registry" {
@@ -161,4 +166,16 @@ output "connect" {
 output "kube_config_admin" {
   value     = module.cluster.kube_config_admin_raw
   sensitive = true
+}
+
+output "vpn_public_ip" {
+  value = module.cluster.vpn_public_ip
+}
+
+output "ingress_public_ip" {
+  value = module.cluster.ingress_public_ip
+}
+
+output "egress_public_ip" {
+  value = module.cluster.egress_public_ip
 }

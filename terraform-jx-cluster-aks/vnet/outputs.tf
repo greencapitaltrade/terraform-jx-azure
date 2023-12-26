@@ -3,5 +3,9 @@ output "subnet_id" {
 }
 
 output "vpn_public_ip" {
-  value = var.private_cluster_enabled ? azurerm_public_ip.vpn_gateway_public_ip[0].ip_address : null
+  value = azurerm_public_ip.vpn_gateway_public_ip.ip_address
+}
+
+output "egress_public_ip" {
+  value = azurerm_public_ip.egress_ip.ip_address
 }

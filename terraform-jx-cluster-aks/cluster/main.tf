@@ -1,3 +1,11 @@
+resource "azurerm_public_ip" "ingress_ip" {
+  name                = var.ingress_ip_name
+  location            = var.location
+  resource_group_name = var.node_resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
 resource "azurerm_kubernetes_cluster" "aks" {
   name                      = var.cluster_name
   location                  = var.location
@@ -8,6 +16,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   sku_tier                  = var.sku_tier
   automatic_channel_upgrade = var.automatic_channel_upgrade
   private_cluster_enabled   = var.private_cluster_enabled
+
+  api_server_authorized_ip_ranges = []
 
   default_node_pool {
     name                 = "default"

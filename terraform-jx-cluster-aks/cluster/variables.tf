@@ -202,3 +202,7 @@ variable "dns_service_ip" {
 variable "docker_bridge_cidr" {
   type = string
 }
+variable "ingress_ip_name" {
+  type        = string
+  description = "Name for the IP resource used for ingress"
+}

@@ -228,11 +228,11 @@ variable "gateway_cidr" {
 }
 variable "service_cidr" {
   type    = string
-  default = "12.0.0.0/24"
+  default = "10.1.0.0/24"
 }
 variable "dns_service_ip" {
   type    = string
-  default = "12.0.0.10"
+  default = "10.1.0.4"
 }
 variable "docker_bridge_cidr" {
   type    = string
@@ -349,19 +349,32 @@ variable "storage_resource_group_name" {
   default     = ""
 }
 
-// Miscellaneous
-
-// MongoDB
-variable "mongo_disk_size" {
-  type    = number
-  default = 40
-}
-variable "mongo_resource_group_name" {
+variable "ingress_ip_name" {
   type        = string
-  description = "Resource group to create in which to place mongodb disks"
   default     = ""
+  description = "Name for the IP resource used for ingress"
 }
-variable "mongo_storage_type" {
-  type    = string
-  default = "PremiumV2_LRS"
+
+variable "egress_ip_name" {
+  type        = string
+  default     = ""
+  description = "Name for the IP resource used for egress"
+}
+
+variable "ip_resource_group_name" {
+  type        = string
+  default     = ""
+  description = "Resource group to be used for the static ips"
+}
+
+variable "nat_gateway_name" {
+  type        = string
+  default     = ""
+  description = "NAT Gateway name"
+}
+
+variable "nat_gateway_resource_group_name" {
+  type        = string
+  default     = ""
+  description = "Resource group to be used for the nat gateway"
 }

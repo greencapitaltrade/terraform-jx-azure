@@ -81,6 +81,7 @@ module "cluster" {
   service_cidr             = var.service_cidr
   dns_service_ip           = var.dns_service_ip
   docker_bridge_cidr       = var.docker_bridge_cidr
+  ingress_ip_name          = var.ingress_ip_name
 }
 
 // ----------------------------------------------------------------------------
@@ -88,15 +89,19 @@ module "cluster" {
 // ----------------------------------------------------------------------------
 
 module "vnet" {
-  source                  = "./vnet"
-  resource_group          = azurerm_resource_group.network.name
-  vnet_cidr               = var.vnet_cidr
-  subnet_cidr             = var.subnet_cidr
-  gateway_cidr            = var.gateway_cidr
-  network_name            = local.network_name
-  subnet_name             = local.subnet_name
-  location                = var.location
-  private_cluster_enabled = var.private_cluster_enabled
-  apex_domain             = var.apex_domain
-  subdomain               = var.subdomain
+  source                          = "./vnet"
+  resource_group                  = azurerm_resource_group.network.name
+  vnet_cidr                       = var.vnet_cidr
+  subnet_cidr                     = var.subnet_cidr
+  gateway_cidr                    = var.gateway_cidr
+  network_name                    = local.network_name
+  subnet_name                     = local.subnet_name
+  location                        = var.location
+  private_cluster_enabled         = var.private_cluster_enabled
+  apex_domain                     = var.apex_domain
+  subdomain                       = var.subdomain
+  egress_ip_name                  = var.egress_ip_name
+  ip_resource_group_name          = var.ip_resource_group_name
+  nat_gateway_name                = var.nat_gateway_name
+  nat_gateway_resource_group_name = var.nat_gateway_resource_group_name
 }
