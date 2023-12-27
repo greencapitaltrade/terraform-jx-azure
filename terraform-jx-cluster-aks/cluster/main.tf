@@ -1,11 +1,3 @@
-resource "azurerm_public_ip" "ingress_ip" {
-  name                = var.ingress_ip_name
-  location            = var.location
-  resource_group_name = var.node_resource_group_name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
 resource "azurerm_kubernetes_cluster" "aks" {
   name                      = var.cluster_name
   location                  = var.location
@@ -71,6 +63,14 @@ resource "azurerm_kubernetes_cluster" "aks" {
       enabled = false
     }
   }
+}
+
+resource "azurerm_public_ip" "ingress_ip" {
+  name                = var.ingress_ip_name
+  location            = var.location
+  resource_group_name = var.node_resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "mlnode" {
