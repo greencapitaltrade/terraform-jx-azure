@@ -65,8 +65,53 @@ resource "kubernetes_storage_class" "azure_ssd_retain" {
 
   reclaim_policy         = "Retain"
   allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
 
-  volume_binding_mode = "WaitForFirstConsumer"
+resource "kubernetes_storage_class" "azure_ssd_delete" {
+  metadata {
+    name = "ssd-delete"
+  }
+
+  storage_provisioner = "disk.csi.azure.com"
+  parameters = {
+    skuname = "Premium_LRS"
+    kind    = "Managed"
+  }
+
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
+resource "kubernetes_storage_class" "azure_standard_retain" {
+  metadata {
+    name = "standard-retain"
+  }
+
+  storage_provisioner = "disk.csi.azure.com"
+  parameters = {
+    skuname = "Standard_LRS"
+    kind    = "Managed"
+  }
+
+  reclaim_policy         = "Retain"
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
+resource "kubernetes_storage_class" "azure_standard_delete" {
+  metadata {
+    name = "standard-delete"
+  }
+
+  storage_provisioner = "disk.csi.azure.com"
+  parameters = {
+    skuname = "Standard_LRS"
+    kind    = "Managed"
+  }
+
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
 }
 
 module "cluster" {
