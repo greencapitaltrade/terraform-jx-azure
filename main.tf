@@ -24,7 +24,7 @@ provider "azurerm" {
 }
 
 provider "kubernetes" {
-  host = module.cluster.cluster_endpoint
+  host = "https://jxgct-devhost-phs4o6xz.hcp.centralindia.azmk8s.io:443" # module.cluster.cluster_endpoint
   cluster_ca_certificate = base64decode(
     module.cluster.ca_certificate,
   )
@@ -39,7 +39,7 @@ provider "kubernetes" {
 provider "helm" {
   kubernetes {
 
-    host = module.cluster.cluster_endpoint
+    host = "https://jxgct-devhost-phs4o6xz.hcp.centralindia.azmk8s.io:443" # module.cluster.cluster_endpoint
     cluster_ca_certificate = base64decode(
       module.cluster.ca_certificate,
     )
@@ -50,6 +50,21 @@ provider "helm" {
       module.cluster.client_key,
     )
   }
+}
+
+resource "kubernetes_storage_class" "azure_ssd_retain" {
+  metadata {
+    name = "ssd-retain"
+  }
+
+  storage_provisioner = "disk.csi.azure.com"
+  parameters = {
+    skuname = "Premium_LRS"
+    kind    = "Managed"
+  }
+
+  reclaim_policy = "Retain"
+  allow_volume_expansion = true
 }
 
 module "cluster" {

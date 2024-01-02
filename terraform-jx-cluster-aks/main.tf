@@ -34,6 +34,20 @@ resource "azurerm_resource_group" "cluster" {
   location = var.location
 }
 
+resource "azurerm_resource_group" "cluster_node" {
+  name     = local.cluster_node_resource_group_name
+  location = var.location
+}
+
+resource "azurerm_public_ip" "ingress_ip" {
+  depends_on          = [module.vnet]
+  name                = var.ingress_ip_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.cluster_node.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
 // ----------------------------------------------------------------------------
 // Setup Azure Cluster
 // ----------------------------------------------------------------------------
