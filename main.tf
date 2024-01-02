@@ -65,6 +65,8 @@ resource "kubernetes_storage_class" "azure_ssd_retain" {
 
   reclaim_policy         = "Retain"
   allow_volume_expansion = true
+
+  volume_binding_mode = "WaitForFirstConsumer"
 }
 
 module "cluster" {
