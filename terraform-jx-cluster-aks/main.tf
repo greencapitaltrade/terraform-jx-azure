@@ -37,6 +37,10 @@ resource "azurerm_resource_group" "cluster" {
 resource "azurerm_resource_group" "cluster_node" {
   name     = local.cluster_node_resource_group_name
   location = var.location
+  tags = {
+    aks-managed-cluster-name = var.cluster_name
+    aks-managed-cluster-rg   = local.cluster_resource_group_name
+  }
 }
 
 resource "azurerm_public_ip" "ingress_ip" {

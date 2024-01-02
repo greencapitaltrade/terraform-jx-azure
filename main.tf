@@ -63,7 +63,7 @@ resource "kubernetes_storage_class" "azure_ssd_retain" {
     kind    = "Managed"
   }
 
-  reclaim_policy = "Retain"
+  reclaim_policy         = "Retain"
   allow_volume_expansion = true
 }
 

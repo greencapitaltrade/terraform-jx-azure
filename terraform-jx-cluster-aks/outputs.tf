@@ -31,7 +31,7 @@ output "vpn_public_ip" {
 }
 
 output "ingress_public_ip" {
-  value = module.cluster.ingress_public_ip
+  value = azurerm_public_ip.ingress_ip.ip_address
 }
 
 output "egress_public_ip" {

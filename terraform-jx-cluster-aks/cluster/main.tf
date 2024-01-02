@@ -39,6 +39,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
     azure_active_directory {
       managed = true
+      admin_group_object_ids = [
+        "34657806-ad6d-41f8-87cc-017e41264d92"
+      ]
     }
   }
 
@@ -65,13 +68,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-resource "azurerm_public_ip" "ingress_ip" {
-  name                = var.ingress_ip_name
-  location            = var.location
-  resource_group_name = var.node_resource_group_name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
+# resource "azurerm_public_ip" "ingress_ip" {
+#   name                = var.ingress_ip_name
+#   location            = var.location
+#   resource_group_name = var.node_resource_group_name
+#   allocation_method   = "Static"
+#   sku                 = "Standard"
+# }
 
 resource "azurerm_kubernetes_cluster_node_pool" "mlnode" {
   count                 = var.ml_node_size == "" ? 0 : 1
@@ -103,7 +106,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.build_node_size
   vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.use_spot ? 0 : var.build_node_count
+  node_count            = var.use_spot ? 1 : var.build_node_count
   min_count             = var.min_build_node_count
   max_count             = var.max_build_node_count
   orchestrator_version  = var.cluster_version
@@ -127,7 +130,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "appnode" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.app_node_size
   vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.app_use_spot ? 0 : var.app_node_count
+  node_count            = var.app_use_spot ? 6 : var.app_node_count
   min_count             = var.min_app_node_count
   max_count             = var.max_app_node_count
   orchestrator_version  = var.cluster_version
