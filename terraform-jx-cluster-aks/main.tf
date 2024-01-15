@@ -1,18 +1,3 @@
-// ----------------------------------------------------------------------------
-// Enforce Terraform version
-//
-// ----------------------------------------------------------------------------
-terraform {
-  required_version = ">= 0.13.2"
-  required_providers {
-    azurerm = {
-      version = ">=2.57.0"
-    }
-    tls = {
-      version = "~> 4.0"
-    }
-  }
-}
 
 // ----------------------------------------------------------------------------
 // Retrieve active subscription resources are being created in
@@ -37,10 +22,13 @@ resource "azurerm_resource_group" "cluster" {
 resource "azurerm_resource_group" "cluster_node" {
   name     = local.cluster_node_resource_group_name
   location = var.location
+  # TODO: convert managed_by value to variable
+  managed_by = "/subscriptions/e329e26a-2480-4b97-b60e-e40d67de7878/resourcegroups/rg-cluster-gct-dev/providers/Microsoft.ContainerService/managedClusters/gct-dev"
   tags = {
     aks-managed-cluster-name = var.cluster_name
     aks-managed-cluster-rg   = local.cluster_resource_group_name
   }
+  timeouts {}
 }
 
 resource "azurerm_public_ip" "ingress_ip" {
@@ -50,6 +38,9 @@ resource "azurerm_public_ip" "ingress_ip" {
   resource_group_name = azurerm_resource_group.cluster_node.name
   allocation_method   = "Static"
   sku                 = "Standard"
+  ip_tags             = {}
+  tags                = {}
+  zones               = ["1", "2", "3"]
 }
 
 // ----------------------------------------------------------------------------

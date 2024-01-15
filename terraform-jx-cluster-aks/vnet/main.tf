@@ -14,6 +14,9 @@ resource "azurerm_public_ip" "egress_ip" {
   resource_group_name = var.resource_group
   allocation_method   = "Static"
   sku                 = "Standard"
+  tags                = {}
+  ip_tags             = {}
+  zones               = ["1", "2", "3"]
 }
 
 resource "azurerm_nat_gateway" "nat_gateway" {

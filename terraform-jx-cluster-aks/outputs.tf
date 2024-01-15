@@ -25,15 +25,21 @@ output "kube_config_admin_raw" {
 output "kube_config_admin" {
   value = module.cluster.kube_config_admin
 }
-
 output "vpn_public_ip" {
   value = module.vnet.vpn_public_ip
 }
-
 output "ingress_public_ip" {
   value = azurerm_public_ip.ingress_ip.ip_address
 }
-
 output "egress_public_ip" {
   value = module.vnet.egress_public_ip
+}
+output "vnet_resource_group_name" {
+  value = azurerm_resource_group.network.name
+}
+output "vnet_id" {
+  value = module.vnet.vnet_id
+}
+output "vnet_name" {
+  value = module.vnet.vnet_name
 }

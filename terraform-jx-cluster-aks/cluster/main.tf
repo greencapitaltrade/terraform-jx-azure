@@ -1,15 +1,16 @@
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                      = var.cluster_name
-  location                  = var.location
-  resource_group_name       = var.resource_group_name
-  node_resource_group       = var.node_resource_group_name
-  dns_prefix                = var.dns_prefix
-  kubernetes_version        = var.cluster_version
-  sku_tier                  = var.sku_tier
-  automatic_channel_upgrade = var.automatic_channel_upgrade
-  private_cluster_enabled   = var.private_cluster_enabled
-
-  api_server_authorized_ip_ranges = []
+  name                                = var.cluster_name
+  location                            = var.location
+  resource_group_name                 = var.resource_group_name
+  node_resource_group                 = var.node_resource_group_name
+  dns_prefix                          = var.dns_prefix
+  kubernetes_version                  = var.cluster_version
+  sku_tier                            = var.sku_tier
+  automatic_channel_upgrade           = var.automatic_channel_upgrade
+  private_cluster_enabled             = var.private_cluster_enabled
+  private_cluster_public_fqdn_enabled = true
+  image_cleaner_enabled               = true
+  image_cleaner_interval_hours        = 48
 
   default_node_pool {
     name                 = "default"
@@ -24,47 +25,20 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   network_profile {
-    network_plugin     = var.cluster_network_model
-    service_cidr       = var.service_cidr
-    dns_service_ip     = var.dns_service_ip
-    docker_bridge_cidr = var.docker_bridge_cidr
+    network_plugin = var.cluster_network_model
+    service_cidr   = var.service_cidr
+    dns_service_ip = var.dns_service_ip
   }
 
   identity {
     type = "SystemAssigned"
   }
 
-  role_based_access_control {
-    enabled = true
-
-    azure_active_directory {
-      managed = true
-      admin_group_object_ids = [
-        "34657806-ad6d-41f8-87cc-017e41264d92"
-      ]
-    }
-  }
-
-  addon_profile {
-    dynamic "oms_agent" {
-      for_each = var.enable_log_analytics ? [""] : []
-      content {
-        enabled                    = var.enable_log_analytics
-        log_analytics_workspace_id = var.enable_log_analytics ? azurerm_log_analytics_workspace.cluster[0].id : ""
-      }
-    }
-    aci_connector_linux {
-      enabled = false
-    }
-    azure_policy {
-      enabled = false
-    }
-    http_application_routing {
-      enabled = false
-    }
-    kube_dashboard {
-      enabled = false
-    }
+  azure_active_directory_role_based_access_control {
+    managed = true
+    admin_group_object_ids = [
+      "34657806-ad6d-41f8-87cc-017e41264d92"
+    ]
   }
 }
 
@@ -130,7 +104,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "appnode" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.app_node_size
   vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.app_use_spot ? 8 : var.app_node_count
+  node_count            = var.app_use_spot ? 6 : var.app_node_count
   min_count             = var.min_app_node_count
   max_count             = var.max_app_node_count
   orchestrator_version  = var.cluster_version

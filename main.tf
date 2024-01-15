@@ -7,6 +7,13 @@ terraform {
     kubernetes = {
       version = ">=1.13.3"
     }
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "3.87.0"
+    }
+    tls = {
+      version = "~> 4.0"
+    }
   }
   backend "azurerm" {
     resource_group_name  = "tf-state-rg"
@@ -116,7 +123,9 @@ resource "kubernetes_storage_class" "azure_standard_delete" {
 
 resource "kubernetes_storage_class" "azure_file_ssd_retain" {
   metadata {
-    name = "file-ssd-retain"
+    name        = "file-ssd-retain"
+    annotations = {}
+    labels      = {}
   }
 
   storage_provisioner = "file.csi.azure.com"
@@ -127,7 +136,16 @@ resource "kubernetes_storage_class" "azure_file_ssd_retain" {
 
   reclaim_policy         = "Retain"
   allow_volume_expansion = true
-  volume_binding_mode    = "WaitForFirstConsumer"
+  volume_binding_mode    = "Immediate"
+  mount_options = [
+    "actimeo=30",
+    "cache=strict",
+    "dir_mode=0777",
+    "file_mode=0777",
+    "gid=0",
+    "mfsymlinks",
+    "uid=0",
+  ]
 }
 
 resource "kubernetes_storage_class" "azure_file_ssd_delete" {
@@ -142,12 +160,23 @@ resource "kubernetes_storage_class" "azure_file_ssd_delete" {
   }
 
   allow_volume_expansion = true
-  volume_binding_mode    = "WaitForFirstConsumer"
+  volume_binding_mode    = "Immediate"
+  mount_options = [
+    "actimeo=30",
+    "cache=strict",
+    "dir_mode=0777",
+    "file_mode=0777",
+    "gid=0",
+    "mfsymlinks",
+    "uid=0",
+  ]
 }
 
 resource "kubernetes_storage_class" "azure_file_standard_retain" {
   metadata {
-    name = "file-standard-retain"
+    name        = "file-standard-retain"
+    annotations = {}
+    labels      = {}
   }
 
   storage_provisioner = "file.csi.azure.com"
@@ -158,12 +187,23 @@ resource "kubernetes_storage_class" "azure_file_standard_retain" {
 
   reclaim_policy         = "Retain"
   allow_volume_expansion = true
-  volume_binding_mode    = "WaitForFirstConsumer"
+  volume_binding_mode    = "Immediate"
+  mount_options = [
+    "actimeo=30",
+    "cache=strict",
+    "dir_mode=0777",
+    "file_mode=0777",
+    "gid=0",
+    "mfsymlinks",
+    "uid=0",
+  ]
 }
 
 resource "kubernetes_storage_class" "azure_file_standard_delete" {
   metadata {
-    name = "file-standard-delete"
+    name        = "file-standard-delete"
+    annotations = {}
+    labels      = {}
   }
 
   storage_provisioner = "file.csi.azure.com"
@@ -173,7 +213,16 @@ resource "kubernetes_storage_class" "azure_file_standard_delete" {
   }
 
   allow_volume_expansion = true
-  volume_binding_mode    = "WaitForFirstConsumer"
+  volume_binding_mode    = "Immediate"
+  mount_options = [
+    "actimeo=30",
+    "cache=strict",
+    "dir_mode=0777",
+    "file_mode=0777",
+    "gid=0",
+    "mfsymlinks",
+    "uid=0",
+  ]
 }
 
 module "cluster" {
@@ -280,6 +329,16 @@ module "storage" {
   cluster_name         = local.cluster_name
   location             = var.location
   storage_principal_id = module.cluster.kubelet_identity_id
+}
+
+module "postgesql" {
+  source                   = "./terraform-postgresql-flexible-server"
+  cluster_name             = local.cluster_name
+  location                 = var.location
+  vnet_resource_group_name = module.cluster.vnet_resource_group_name
+  vnet_id                  = module.cluster.vnet_id
+  vnet_name                = module.cluster.vnet_name
+  key_vault_id             = module.secrets.key_vault_id
 }
 
 output "connect" {

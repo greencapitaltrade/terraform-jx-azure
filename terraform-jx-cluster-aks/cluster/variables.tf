@@ -181,7 +181,7 @@ variable "logging_retention_days" {
 }
 variable "sku_tier" {
   type    = string
-  default = "Paid"
+  default = "Standard"
 }
 variable "automatic_channel_upgrade" {
   type    = string

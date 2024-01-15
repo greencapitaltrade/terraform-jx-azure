@@ -1,16 +1,3 @@
-// ----------------------------------------------------------------------------
-// Enforce Terraform version
-//
-// ----------------------------------------------------------------------------
-terraform {
-  required_version = ">= 0.13.2"
-  required_providers {
-    azurerm = {
-      version = ">=2.39.0"
-    }
-  }
-}
-
 resource "azurerm_resource_group" "acr" {
   count = var.use_existing_acr_name == null ? 1 : 0
 

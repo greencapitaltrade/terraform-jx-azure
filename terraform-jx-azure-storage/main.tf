@@ -1,29 +1,19 @@
-// ----------------------------------------------------------------------------
-// Enforce Terraform version
-//
-// ----------------------------------------------------------------------------
-terraform {
-  required_version = ">= 0.13.2"
-  required_providers {
-    azurerm = {
-      version = ">=2.41.0"
-    }
-  }
-}
-
 resource "azurerm_resource_group" "storage" {
   name     = local.resource_group_name
   location = var.location
 }
 
 resource "azurerm_storage_account" "storage" {
-  name                     = local.account_name
-  location                 = var.location
-  resource_group_name      = azurerm_resource_group.storage.name
-  account_replication_type = "RAGRS"
-  account_tier             = "Standard"
-  account_kind             = "StorageV2"
-  is_hns_enabled           = true
+  name                             = local.account_name
+  location                         = var.location
+  resource_group_name              = azurerm_resource_group.storage.name
+  account_replication_type         = "RAGRS"
+  account_tier                     = "Standard"
+  account_kind                     = "StorageV2"
+  is_hns_enabled                   = true
+  allow_nested_items_to_be_public  = false
+  cross_tenant_replication_enabled = false
+  min_tls_version                  = "TLS1_2"
 }
 
 resource "azurerm_storage_container" "logs" {

@@ -1,6 +1,9 @@
 output "key_vault_name" {
   value = var.enabled ? azurerm_key_vault.jx.0.name : ""
 }
+output "key_vault_id" {
+  value = var.enabled ? azurerm_key_vault.jx.0.id : ""
+}
 output "tenant_id" {
   value = var.enabled ? azurerm_key_vault.jx.0.tenant_id : ""
 }
