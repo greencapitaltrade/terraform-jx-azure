@@ -114,6 +114,68 @@ resource "kubernetes_storage_class" "azure_standard_delete" {
   volume_binding_mode    = "WaitForFirstConsumer"
 }
 
+resource "kubernetes_storage_class" "azure_file_ssd_retain" {
+  metadata {
+    name = "file-ssd-retain"
+  }
+
+  storage_provisioner = "file.csi.azure.com"
+  parameters = {
+    skuname = "Premium_LRS"
+    kind    = "Managed"
+  }
+
+  reclaim_policy         = "Retain"
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
+resource "kubernetes_storage_class" "azure_file_ssd_delete" {
+  metadata {
+    name = "file-ssd-delete"
+  }
+
+  storage_provisioner = "file.csi.azure.com"
+  parameters = {
+    skuname = "Premium_LRS"
+    kind    = "Managed"
+  }
+
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
+resource "kubernetes_storage_class" "azure_file_standard_retain" {
+  metadata {
+    name = "file-standard-retain"
+  }
+
+  storage_provisioner = "file.csi.azure.com"
+  parameters = {
+    skuname = "Standard_LRS"
+    kind    = "Managed"
+  }
+
+  reclaim_policy         = "Retain"
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
+resource "kubernetes_storage_class" "azure_file_standard_delete" {
+  metadata {
+    name = "file-standard-delete"
+  }
+
+  storage_provisioner = "file.csi.azure.com"
+  parameters = {
+    skuname = "Standard_LRS"
+    kind    = "Managed"
+  }
+
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+}
+
 module "cluster" {
   source                           = "./terraform-jx-cluster-aks"
   cluster_name                     = local.cluster_name

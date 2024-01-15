@@ -130,7 +130,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "appnode" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.app_node_size
   vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.app_use_spot ? 6 : var.app_node_count
+  node_count            = var.app_use_spot ? 8 : var.app_node_count
   min_count             = var.min_app_node_count
   max_count             = var.max_app_node_count
   orchestrator_version  = var.cluster_version
