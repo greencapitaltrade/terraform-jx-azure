@@ -169,7 +169,7 @@ resource "azurerm_postgresql_flexible_server_database" "gct" {
 }
 
 resource "azurerm_postgresql_flexible_server_database" "cro" {
-  name      = "gct"
+  name      = "cro"
   server_id = azurerm_postgresql_flexible_server.psql.id
   collation = "en_US.utf8"
   charset   = "utf8"
