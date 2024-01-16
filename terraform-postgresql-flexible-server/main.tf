@@ -66,10 +66,116 @@ resource "azurerm_postgresql_flexible_server" "psql" {
   administrator_login    = var.psql_admin_login
   administrator_password = azurerm_key_vault_secret.psql_kv_admin_password.value
   storage_mb             = var.psql_storage_mb
-  auto_grow_enabled      = true
+  auto_grow_enabled      = false
   zone                   = "3"
 
   # Set the backup retention policy to 7 for non-prod, and 30 for prod
   backup_retention_days = 7
   sku_name              = var.psql_sku_name
+}
+
+# Create the Azure PostgreSQL - Flexible Server Read Replica using terraform
+resource "azurerm_postgresql_flexible_server" "psql_read_replica" {
+  name                   = "psql-read-${var.cluster_name}"
+  resource_group_name    = azurerm_resource_group.rg_psql.name
+  location               = azurerm_resource_group.rg_psql.location
+  version                = var.psql_version
+  delegated_subnet_id    = azurerm_subnet.psql.id
+  private_dns_zone_id    = azurerm_private_dns_zone.psql_dns_zone.id
+  administrator_login    = var.psql_admin_login
+  administrator_password = azurerm_key_vault_secret.psql_kv_admin_password.value
+  storage_mb             = var.psql_storage_mb
+  auto_grow_enabled      = false
+  zone                   = "3"
+
+  # Set the backup retention policy to 7 for non-prod, and 30 for prod
+  backup_retention_days = 7
+  sku_name              = var.psql_sku_name
+
+  create_mode      = "Replica"
+  source_server_id = azurerm_postgresql_flexible_server.psql.id
+}
+
+resource "azurerm_postgresql_flexible_server_database" "bifrost" {
+  name      = "bifrost"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "ultron" {
+  name      = "ultron"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "lago" {
+  name      = "lago"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "shield" {
+  name      = "shield"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "loki" {
+  name      = "loki"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "gct" {
+  name      = "gct"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "cro" {
+  name      = "gct"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
 }
