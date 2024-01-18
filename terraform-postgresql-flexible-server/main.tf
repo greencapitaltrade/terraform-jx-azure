@@ -1,6 +1,9 @@
 resource "azurerm_resource_group" "rg_psql" {
   name     = local.resource_group_name
   location = var.location
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "azurerm_subnet" "psql" {
@@ -18,11 +21,17 @@ resource "azurerm_subnet" "psql" {
       ]
     }
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "azurerm_private_dns_zone" "psql_dns_zone" {
   name                = "${var.cluster_name}.private.postgres.database.azure.com"
   resource_group_name = var.vnet_resource_group_name
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "psql_dns_zone_vnet_associate" {
@@ -34,6 +43,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "psql_dns_zone_vnet_ass
   depends_on = [
     azurerm_private_dns_zone.psql_dns_zone
   ]
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Generate PostgreSQL admin random password
@@ -53,6 +65,9 @@ resource "azurerm_key_vault_secret" "psql_kv_admin_password" {
   depends_on = [
     random_password.psql_admin_password,
   ]
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Create the Azure PostgreSQL - Flexible Server using terraform
@@ -72,6 +87,9 @@ resource "azurerm_postgresql_flexible_server" "psql" {
   # Set the backup retention policy to 7 for non-prod, and 30 for prod
   backup_retention_days = 7
   sku_name              = var.psql_sku_name
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Create the Azure PostgreSQL - Flexible Server Read Replica using terraform
@@ -94,6 +112,9 @@ resource "azurerm_postgresql_flexible_server" "psql_read_replica" {
 
   create_mode      = "Replica"
   source_server_id = azurerm_postgresql_flexible_server.psql.id
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "azurerm_postgresql_flexible_server_database" "bifrost" {
@@ -168,8 +189,44 @@ resource "azurerm_postgresql_flexible_server_database" "gct" {
   }
 }
 
-resource "azurerm_postgresql_flexible_server_database" "cro" {
-  name      = "cro"
+resource "azurerm_postgresql_flexible_server_database" "pepper" {
+  name      = "pepper"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "infinity" {
+  name      = "infinity"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "vision" {
+  name      = "vision"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "azurerm_postgresql_flexible_server_database" "hill" {
+  name      = "hill"
   server_id = azurerm_postgresql_flexible_server.psql.id
   collation = "en_US.utf8"
   charset   = "utf8"

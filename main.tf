@@ -362,3 +362,7 @@ output "ingress_public_ip" {
 output "egress_public_ip" {
   value = module.cluster.egress_public_ip
 }
+
+output "pg_host_address" {
+  value = module.postgesql.pg_host_address
+}
