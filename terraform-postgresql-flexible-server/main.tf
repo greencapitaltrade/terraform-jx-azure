@@ -260,3 +260,15 @@ resource "azurerm_postgresql_flexible_server_database" "shuri" {
     prevent_destroy = true
   }
 }
+
+resource "azurerm_postgresql_flexible_server_database" "starlord" {
+  name      = "starlord"
+  server_id = azurerm_postgresql_flexible_server.psql.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+
+  # prevent the possibility of accidental data loss
+  lifecycle {
+    prevent_destroy = true
+  }
+}
