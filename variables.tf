@@ -185,6 +185,30 @@ variable "max_jx_node_count" {
 }
 
 // ----------------------------------------------------------------------------
+// Stateful nodepool variables (for Kafka, Redis, MongoDB, Airflow)
+// ----------------------------------------------------------------------------
+variable "stateful_node_size" {
+  type        = string
+  default     = "Standard_D4s_v5"
+  description = "The size of the stateful node to use for databases and message queues"
+}
+variable "stateful_node_count" {
+  description = "The number of stateful nodes to use for the cluster"
+  type        = number
+  default     = 3
+}
+variable "min_stateful_node_count" {
+  description = "The minimum number of stateful nodes to use for the cluster if autoscaling is enabled"
+  type        = number
+  default     = 3
+}
+variable "max_stateful_node_count" {
+  description = "The maximum number of stateful nodes to use for the cluster if autoscaling is enabled"
+  type        = number
+  default     = 5
+}
+
+// ----------------------------------------------------------------------------
 // Cluster variables
 // ----------------------------------------------------------------------------
 variable "dns_prefix" {

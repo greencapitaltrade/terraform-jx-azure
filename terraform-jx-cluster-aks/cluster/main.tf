@@ -104,12 +104,12 @@ resource "azurerm_kubernetes_cluster_node_pool" "appnode" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.app_node_size
   vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.app_use_spot ? 12 : var.app_node_count
+  node_count            = var.app_node_count
   min_count             = var.min_app_node_count
   max_count             = var.max_app_node_count
   orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_app_node_count == null ? false : true
-  node_taints           = concat(["sku=app:NoSchedule", "pool=spot:NoSchedule"], var.use_spot ? ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"] : [])
+  node_taints           = concat(["sku=app:NoSchedule", "pool=spot:NoSchedule"], var.app_use_spot ? ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"] : [])
   node_labels = merge({
     "gc-t.in.priority" = var.app_use_spot ? "spot" : "regular"
     }, var.app_use_spot ? {
@@ -132,4 +132,24 @@ resource "azurerm_kubernetes_cluster_node_pool" "jxnode" {
   orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_jx_node_count == null ? false : true
   os_disk_size_gb       = 30
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "stateful" {
+  count                 = var.stateful_node_size == "" ? 0 : 1
+  name                  = "stateful"
+  priority              = "Regular"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  vm_size               = var.stateful_node_size
+  vnet_subnet_id        = var.vnet_subnet_id
+  node_count            = var.stateful_node_count
+  min_count             = var.min_stateful_node_count
+  max_count             = var.max_stateful_node_count
+  orchestrator_version  = var.cluster_version
+  enable_auto_scaling   = var.max_stateful_node_count == null ? false : true
+  node_taints           = ["workload=stateful:NoSchedule"]
+  node_labels = {
+    "gc-t.in.priority" = "regular"
+    "workload-type"    = "stateful"
+  }
+  os_disk_size_gb = 50
 }

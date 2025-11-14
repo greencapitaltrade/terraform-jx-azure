@@ -85,6 +85,10 @@ module "cluster" {
   jx_node_count            = var.jx_node_count
   min_jx_node_count        = var.min_jx_node_count
   max_jx_node_count        = var.max_jx_node_count
+  stateful_node_size       = var.stateful_node_size
+  stateful_node_count      = var.stateful_node_count
+  min_stateful_node_count  = var.min_stateful_node_count
+  max_stateful_node_count  = var.max_stateful_node_count
   private_cluster_enabled  = var.private_cluster_enabled
   vpn_public_ip            = module.vnet.vpn_public_ip
   service_cidr             = var.service_cidr

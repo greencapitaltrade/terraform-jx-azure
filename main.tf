@@ -9,7 +9,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.87.0"
+      version = "~> 3.116.0"
     }
     tls = {
       version = "~> 4.0"
@@ -24,8 +24,10 @@ terraform {
 }
 
 provider "azurerm" {
+  skip_provider_registration = true
   features {
     key_vault {
+      purge_soft_delete_on_destroy = false
     }
   }
 }
