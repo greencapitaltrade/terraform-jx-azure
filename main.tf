@@ -14,6 +14,14 @@ terraform {
     tls = {
       version = "~> 4.0"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
+    external = {
+      source  = "hashicorp/external"
+      version = "~> 2.3"
+    }
   }
   backend "azurerm" {
     resource_group_name  = "tf-state-rg"
@@ -259,10 +267,10 @@ module "cluster" {
   app_node_count                   = var.app_node_count
   min_app_node_count               = var.min_app_node_count
   max_app_node_count               = var.max_app_node_count
-  jx_node_size                     = var.jx_node_size
-  jx_node_count                    = var.jx_node_count
-  min_jx_node_count                = var.min_jx_node_count
-  max_jx_node_count                = var.max_jx_node_count
+  stateful_node_size               = var.stateful_node_size
+  stateful_node_count              = var.stateful_node_count
+  min_stateful_node_count          = var.min_stateful_node_count
+  max_stateful_node_count          = var.max_stateful_node_count
   subnet_name                      = var.subnet_name
   subnet_cidr                      = var.subnet_cidr
   vnet_cidr                        = var.vnet_cidr

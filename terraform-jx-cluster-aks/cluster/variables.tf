@@ -117,29 +117,6 @@ variable "max_app_node_count" {
   default     = null
 }
 
-// ----------------------------------------------------------------------------
-// JX nodepool variables
-// ----------------------------------------------------------------------------
-variable "jx_node_size" {
-  type        = string
-  default     = ""
-  description = "The size of the jx node to use for the cluster"
-}
-variable "jx_node_count" {
-  description = "The number of jx nodes to use for the cluster"
-  type        = number
-  default     = null
-}
-variable "min_jx_node_count" {
-  description = "The minimum number of jx nodes to use for the cluster if autoscaling is enabled"
-  type        = number
-  default     = null
-}
-variable "max_jx_node_count" {
-  description = "The maximum number of jx nodes to use for the cluster if autoscaling is enabled"
-  type        = number
-  default     = null
-}
 
 // ----------------------------------------------------------------------------
 // Stateful nodepool variables (for Kafka, Redis, MongoDB, etc.)
@@ -162,6 +139,11 @@ variable "min_stateful_node_count" {
 variable "max_stateful_node_count" {
   description = "The maximum number of stateful nodes to use for the cluster if autoscaling is enabled"
   type        = number
+  default     = null
+}
+variable "proximity_placement_group_id" {
+  description = "The ID of the Proximity Placement Group for stateful nodes to enable low latency"
+  type        = string
   default     = null
 }
 

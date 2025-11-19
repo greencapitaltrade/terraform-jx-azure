@@ -23,8 +23,8 @@ resource "azurerm_role_assignment" "storage" {
   principal_id         = var.storage_principal_id
 }
 
-# Cold Storage Accounts for Database Archival
-# Creates storage accounts optimized for cold storage with automatic lifecycle policies
+# Consolidated Storage for Jenkins-X and Application Archives
+# Database backups are handled automatically by Azure PostgreSQL (30-day retention)
 
 # Consolidated containers in main storage account for different retention needs
 resource "azurerm_storage_container" "logs" {
@@ -51,11 +51,6 @@ resource "azurerm_storage_container" "shortterm_archive" {
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "database_backups" {
-  name                  = "database-backups"  # Database backups with lifecycle
-  storage_account_name  = azurerm_storage_account.storage.name
-  container_access_type = "private"
-}
 
 # Consolidated Lifecycle Management Policy for all containers
 resource "azurerm_storage_management_policy" "consolidated_lifecycle" {
@@ -80,24 +75,6 @@ resource "azurerm_storage_management_policy" "consolidated_lifecycle" {
     }
   }
 
-  # Database backups - Move to cool immediately, archive after 7 days, keep for 3 years
-  rule {
-    name    = "database-backups-lifecycle"
-    enabled = true
-    
-    filters {
-      prefix_match = ["database-backups/"]
-      blob_types   = ["blockBlob"]
-    }
-    
-    actions {
-      base_blob {
-        tier_to_cool_after_days_since_modification_greater_than    = 1    # Cool immediately
-        tier_to_archive_after_days_since_modification_greater_than = 7    # Archive after 7 days
-        delete_after_days_since_modification_greater_than         = 1095  # Delete after 3 years
-      }
-    }
-  }
 
   # Short-term archive - Archive immediately, delete after 1 year
   rule {

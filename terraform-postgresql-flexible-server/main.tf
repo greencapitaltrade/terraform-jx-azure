@@ -84,8 +84,8 @@ resource "azurerm_postgresql_flexible_server" "psql" {
   auto_grow_enabled      = false
   zone                   = "3"
 
-  # Set the backup retention policy to 7 for non-prod, and 30 for prod
-  backup_retention_days = 7
+  # Set the backup retention policy to 30 days for production safety  
+  backup_retention_days = 30
   sku_name              = var.psql_sku_name
   lifecycle {
     prevent_destroy = true
@@ -106,8 +106,8 @@ resource "azurerm_postgresql_flexible_server" "psql_read_replica" {
   auto_grow_enabled      = false
   zone                   = "3"
 
-  # Set the backup retention policy to 7 for non-prod, and 30 for prod
-  backup_retention_days = 7
+  # Set the backup retention policy to 30 days for production safety  
+  backup_retention_days = 30
   sku_name              = var.psql_sku_name
 
   create_mode      = "Replica"
