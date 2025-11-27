@@ -33,3 +33,27 @@ variable "use_existing_acr_resource_group_name" {
   type        = string
   default     = null
 }
+
+variable "use_nexus_registry" {
+  description = "Use Nexus registry instead of ACR. When true, skips ACR creation and provides Nexus credentials."
+  type        = bool
+  default     = false
+}
+
+variable "nexus_registry_url" {
+  description = "URL of the Nexus registry when use_nexus_registry is true"
+  type        = string
+  default     = "nexus-nexus-repository-manager.jx.svc.cluster.local:8083"
+}
+
+variable "nexus_username" {
+  description = "Username for Nexus registry authentication"
+  type        = string
+  default     = "admin"
+}
+
+variable "nexus_password" {
+  description = "Password for Nexus registry authentication"
+  type        = string
+  default     = "admin123"
+}

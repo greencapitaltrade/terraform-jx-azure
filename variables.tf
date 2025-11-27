@@ -340,6 +340,18 @@ variable "use_existing_acr_resource_group_name" {
   default     = null
 }
 
+variable "nexus_registry_username" {
+  description = "Username for Nexus registry authentication"
+  type        = string
+  default     = "admin"
+}
+
+variable "nexus_registry_password" {
+  description = "Password for Nexus registry authentication"
+  type        = string
+  sensitive   = true
+}
+
 // ----------------------------------------------------------------------------
 // Storage variables
 // ---------------------------------------------------------------------------
