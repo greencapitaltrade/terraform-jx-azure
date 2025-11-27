@@ -43,7 +43,7 @@ variable "use_nexus_registry" {
 variable "nexus_registry_url" {
   description = "URL of the Nexus registry when use_nexus_registry is true"
   type        = string
-  default     = "nexus-nexus-repository-manager.jx.svc.cluster.local:8083"
+  default     = "nexus-nexus-repository-manager-docker-8083.jx.svc.cluster.local:8083"
 }
 
 variable "nexus_username" {
