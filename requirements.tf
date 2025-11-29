@@ -1,7 +1,7 @@
 locals {
   jx_requirements_interpolated_content = templatefile("${path.module}/jx-requirements.yml.tpl", {
 
-    registry_name        = "nexus-nexus-repository-manager.jx.svc.cluster.local:8081/repository/docker-hosted"
+    registry_name        = "nexus-nexus-repository-manager.jx.svc.cluster.local:5001"
     domain               = module.dns.domain
     apex_domain          = var.apex_domain
     subdomain            = var.subdomain
