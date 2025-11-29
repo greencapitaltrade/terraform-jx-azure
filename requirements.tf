@@ -1,7 +1,7 @@
 locals {
   jx_requirements_interpolated_content = templatefile("${path.module}/jx-requirements.yml.tpl", {
 
-    registry_name        = "nexus-nexus-repository-manager.jx.svc.cluster.local:5001"
+    registry_name        = module.registry.registry_name  # This will use ACR when use_nexus_registry is false
     domain               = module.dns.domain
     apex_domain          = var.apex_domain
     subdomain            = var.subdomain

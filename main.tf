@@ -296,10 +296,10 @@ module "registry" {
   location                             = var.location
   use_existing_acr_name                = var.use_existing_acr_name
   use_existing_acr_resource_group_name = var.use_existing_acr_resource_group_name
-  use_nexus_registry                   = true
-  nexus_registry_url                   = "nexus-nexus-repository-manager.jx.svc.cluster.local:5001"
-  nexus_username                       = var.nexus_registry_username
-  nexus_password                       = var.nexus_registry_password
+  use_nexus_registry                   = false
+  # nexus_registry_url                   = "nexus-nexus-repository-manager.jx.svc.cluster.local:5001"
+  # nexus_username                       = var.nexus_registry_username
+  # nexus_password                       = var.nexus_registry_password
 }
 
 module "jx-boot" {
