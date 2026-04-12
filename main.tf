@@ -251,9 +251,6 @@ module "cluster" {
   min_node_count                   = var.min_node_count
   max_node_count                   = var.max_node_count
   node_size                        = var.node_size
-  ml_node_count                    = var.ml_node_count
-  min_ml_node_count                = var.min_ml_node_count
-  max_ml_node_count                = var.max_ml_node_count
   ml_node_size                     = var.ml_node_size
   use_spot                         = var.use_spot
   spot_max_price                   = var.spot_max_price
@@ -267,10 +264,6 @@ module "cluster" {
   app_node_count                   = var.app_node_count
   min_app_node_count               = var.min_app_node_count
   max_app_node_count               = var.max_app_node_count
-  stateful_node_size               = var.stateful_node_size
-  stateful_node_count              = var.stateful_node_count
-  min_stateful_node_count          = var.min_stateful_node_count
-  max_stateful_node_count          = var.max_stateful_node_count
   subnet_name                      = var.subnet_name
   subnet_cidr                      = var.subnet_cidr
   vnet_cidr                        = var.vnet_cidr
@@ -363,10 +356,6 @@ output "connect" {
 output "kube_config_admin" {
   value     = module.cluster.kube_config_admin_raw
   sensitive = true
-}
-
-output "vpn_public_ip" {
-  value = module.cluster.vpn_public_ip
 }
 
 output "ingress_public_ip" {
