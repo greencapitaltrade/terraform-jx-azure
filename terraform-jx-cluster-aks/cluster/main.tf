@@ -27,6 +27,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
     node_labels = {
       "gc-t.in.priority" = "regular"
     }
+    node_taints = [
+      "workload=stateful:PreferNoSchedule"
+    ]
   }
 
   network_profile {
