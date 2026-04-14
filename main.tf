@@ -369,3 +369,72 @@ output "egress_public_ip" {
 output "pg_host_address" {
   value = module.postgesql.pg_host_address
 }
+
+# Jumpbox VM for kubectl access (via Azure Bastion)
+resource "azurerm_subnet" "jumpbox" {
+  name                 = "jumpbox"
+  resource_group_name  = module.cluster.network_resource_group_name
+  virtual_network_name = module.cluster.vnet_name
+  address_prefixes     = ["10.3.0.0/24"]
+}
+
+resource "azurerm_network_interface" "jumpbox" {
+  name                = "jumpbox-nic"
+  location            = var.location
+  resource_group_name = module.cluster.network_resource_group_name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.jumpbox.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "jumpbox" {
+  name                = "jumpbox"
+  resource_group_name = module.cluster.network_resource_group_name
+  location            = var.location
+  size                = "Standard_B2s"
+  admin_username      = "azureuser"
+
+  network_interface_ids = [azurerm_network_interface.jumpbox.id]
+
+  admin_ssh_key {
+    username   = "azureuser"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "StandardSSD_LRS"
+    disk_size_gb         = 30
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
+    version   = "latest"
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+# Azure Bastion Developer SKU (free)
+resource "azurerm_subnet" "bastion" {
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = module.cluster.network_resource_group_name
+  virtual_network_name = module.cluster.vnet_name
+  address_prefixes     = ["10.4.0.0/24"]
+}
+
+resource "azurerm_bastion_host" "bastion" {
+  name                = "gct-bastion"
+  location            = var.location
+  resource_group_name = module.cluster.network_resource_group_name
+  sku                 = "Developer"
+
+  virtual_network_id = module.cluster.vnet_id
+}
