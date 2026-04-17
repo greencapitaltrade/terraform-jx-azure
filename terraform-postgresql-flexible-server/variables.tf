@@ -47,9 +47,9 @@ variable "psql_storage_mb" {
 variable "psql_sku_name" {
   description = "(Optional) The SKU Name for the PostgreSQL Flexible Server. The name of the SKU, follows the tier + name pattern (e.g. B_Standard_B1ms, GP_Standard_D2s_v3, MO_Standard_E4s_v3). "
   type        = string
-  default     = "GP_Standard_D2s_v3"
+  default     = "B_Standard_B2s"
   validation {
-    condition     = contains(["B_Standard_B1ms", "GP_Standard_D2s_v3", "MO_Standard_E4s_v3"], var.psql_sku_name)
+    condition     = contains(["B_Standard_B1ms", "B_Standard_B2s", "B_Standard_B4ms", "GP_Standard_D2s_v3", "MO_Standard_E4s_v3"], var.psql_sku_name)
     error_message = "The value of the sku name property of the PostgreSQL is invalid."
   }
 }
