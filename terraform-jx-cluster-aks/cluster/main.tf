@@ -21,10 +21,15 @@ resource "azurerm_kubernetes_cluster" "aks" {
     node_count                  = var.max_node_count == null ? var.node_count : null
     min_count                   = var.min_node_count
     max_count                   = var.max_node_count
-    orchestrator_version        = var.cluster_version
     enable_auto_scaling         = var.max_node_count == null ? false : true
-    os_disk_size_gb             = 30
+    os_disk_size_gb             = 128
     temporary_name_for_rotation = "defaulttemp"
+    node_labels = {
+      "gc-t.in.priority" = "regular"
+    }
+    node_taints = [
+      "workload=stateful:PreferNoSchedule"
+    ]
   }
 
   network_profile {
@@ -99,26 +104,6 @@ resource "null_resource" "enable_vpa" {
 #   sku                 = "Standard"
 # }
 
-resource "azurerm_kubernetes_cluster_node_pool" "mlnode" {
-  count                 = var.ml_node_size == "" ? 0 : 1
-  name                  = "ml"
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-  vm_size               = var.ml_node_size
-  vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.ml_node_count
-  min_count             = var.min_ml_node_count
-  max_count             = var.max_ml_node_count
-  orchestrator_version  = var.cluster_version
-  enable_auto_scaling   = var.max_ml_node_count == null ? false : true
-  node_taints           = ["sku=gpu:NoSchedule", "pool=gpu:NoSchedule"]
-  node_labels = merge({
-    "gc-t.in.priority" = var.use_spot ? "spot" : "regular"
-    }, var.use_spot ? {
-    "cloud.google.com/gke-spot"             = "true"
-    "kubernetes.azure.com/scalesetpriority" = "spot"
-  } : {})
-  os_disk_size_gb = 30
-}
 
 resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
   count                 = var.build_node_size == "" ? 0 : 1
@@ -132,7 +117,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
   node_count            = var.use_spot ? 1 : var.build_node_count
   min_count             = var.min_build_node_count
   max_count             = var.max_build_node_count
-  orchestrator_version  = var.cluster_version
   enable_auto_scaling   = var.max_build_node_count == null ? false : true
   node_taints           = concat(["sku=build:NoSchedule", "pool=builder:NoSchedule"], var.use_spot ? ["kubernetes.azure.com/scalesetpriority=spot:NoSchedule"] : [])
   node_labels = merge({
@@ -141,7 +125,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "buildnode" {
     "cloud.google.com/gke-spot"             = "true"
     "kubernetes.azure.com/scalesetpriority" = "spot"
   } : {})
-  os_disk_size_gb = 30
+  os_disk_size_gb = 128
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "statelessnode" {
@@ -170,29 +154,3 @@ resource "azurerm_kubernetes_cluster_node_pool" "statelessnode" {
 }
 
 
-resource "azurerm_kubernetes_cluster_node_pool" "statefulnode" {
-  count                 = var.stateful_node_size == "" ? 0 : 1
-  name                  = "stateful"
-  priority              = "Regular"
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-  vm_size               = var.stateful_node_size
-  vnet_subnet_id        = var.vnet_subnet_id
-  node_count            = var.stateful_node_count
-  min_count             = var.min_stateful_node_count
-  max_count             = var.max_stateful_node_count
-  orchestrator_version  = var.cluster_version
-  enable_auto_scaling   = var.max_stateful_node_count == null ? false : true
-  
-  # Simplified taint for stateful workloads isolation
-  node_taints = [
-    "workload=stateful:NoSchedule"
-  ]
-  
-  node_labels = {
-    "gc-t.in.priority" = "regular"
-    "agentpool" = "stateful"
-  }
-  
-  # Standard OS disk size - persistent storage via PVCs
-  os_disk_size_gb = 30
-}

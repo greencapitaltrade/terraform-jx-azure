@@ -251,9 +251,6 @@ module "cluster" {
   min_node_count                   = var.min_node_count
   max_node_count                   = var.max_node_count
   node_size                        = var.node_size
-  ml_node_count                    = var.ml_node_count
-  min_ml_node_count                = var.min_ml_node_count
-  max_ml_node_count                = var.max_ml_node_count
   ml_node_size                     = var.ml_node_size
   use_spot                         = var.use_spot
   spot_max_price                   = var.spot_max_price
@@ -267,10 +264,6 @@ module "cluster" {
   app_node_count                   = var.app_node_count
   min_app_node_count               = var.min_app_node_count
   max_app_node_count               = var.max_app_node_count
-  stateful_node_size               = var.stateful_node_size
-  stateful_node_count              = var.stateful_node_count
-  min_stateful_node_count          = var.min_stateful_node_count
-  max_stateful_node_count          = var.max_stateful_node_count
   subnet_name                      = var.subnet_name
   subnet_cidr                      = var.subnet_cidr
   vnet_cidr                        = var.vnet_cidr
@@ -365,10 +358,6 @@ output "kube_config_admin" {
   sensitive = true
 }
 
-output "vpn_public_ip" {
-  value = module.cluster.vpn_public_ip
-}
-
 output "ingress_public_ip" {
   value = module.cluster.ingress_public_ip
 }
@@ -379,4 +368,73 @@ output "egress_public_ip" {
 
 output "pg_host_address" {
   value = module.postgesql.pg_host_address
+}
+
+# Jumpbox VM for kubectl access (via Azure Bastion)
+resource "azurerm_subnet" "jumpbox" {
+  name                 = "jumpbox"
+  resource_group_name  = module.cluster.network_resource_group_name
+  virtual_network_name = module.cluster.vnet_name
+  address_prefixes     = ["10.3.0.0/24"]
+}
+
+resource "azurerm_network_interface" "jumpbox" {
+  name                = "jumpbox-nic"
+  location            = var.location
+  resource_group_name = module.cluster.network_resource_group_name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.jumpbox.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "jumpbox" {
+  name                = "jumpbox"
+  resource_group_name = module.cluster.network_resource_group_name
+  location            = var.location
+  size                = "Standard_B2s"
+  admin_username      = "azureuser"
+
+  network_interface_ids = [azurerm_network_interface.jumpbox.id]
+
+  admin_ssh_key {
+    username   = "azureuser"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "StandardSSD_LRS"
+    disk_size_gb         = 30
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
+    version   = "latest"
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+# Azure Bastion Developer SKU (free)
+resource "azurerm_subnet" "bastion" {
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = module.cluster.network_resource_group_name
+  virtual_network_name = module.cluster.vnet_name
+  address_prefixes     = ["10.4.0.0/24"]
+}
+
+resource "azurerm_bastion_host" "bastion" {
+  name                = "gct-bastion"
+  location            = var.location
+  resource_group_name = module.cluster.network_resource_group_name
+  sku                 = "Developer"
+
+  virtual_network_id = module.cluster.vnet_id
 }
